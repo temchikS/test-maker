@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('https://catherineasquithgallery.com/uploads/posts/2021-12/1639699368_151-catherineasquithgallery-com-p-anime-fon-rozovogo-tsveta-247.jpg'); /* Замените 'your-background-image.jpg' на путь к вашему изображению фона */
+    background-size: cover;
+    background-position: center;
+}
+.navigation-panel{
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: rgba(226, 191, 226, 0.8); /* Добавим небольшой прозрачный фон, чтобы контент был более читаемым */
+    padding: 20px;
+    border-radius: 10px; /* Добавим скругление краев контейнера */
+}
+
+.input-container {
+    margin-bottom: 10px;
+}
+
+input {
+    width: 250px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 150px;
+    padding: 10px;
+    background-color: #a04f85;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #d40cba;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.register-link-container {
+    margin-top: 10px;
+}
+
+.register-link {
+    text-decoration: none;
+    color: #d14fa6;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+.americaya {
+    position: absolute;
+    top: 500;
+    margin-top: -500px;
+    color: #a04f85;
+  }
+.background{
+   color: #bb68b0;
+   font-size: medium;
+   font-family: Arial, sans-serif;
+}
