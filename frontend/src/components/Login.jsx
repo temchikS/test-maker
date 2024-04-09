@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import './loginstyle.css';
 
-
 export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -16,7 +15,7 @@ export default function LoginPage() {
         }
 
         try {
-            const response = await fetch(`http://localhost:5228/api/User/Autorization/Login`, {
+            const response = await fetch(`http://localhost:5228/api/User/Authorization/Login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,6 +30,9 @@ export default function LoginPage() {
                     throw new Error('Ошибка при выполнении запроса');
                 }
             } else {
+                const data = await response.json();
+                console.log(data);
+                localStorage.setItem('token', data.token); 
                 setLoggedIn(true);
             }
         } catch (error) {
@@ -40,7 +42,7 @@ export default function LoginPage() {
     };
 
     if (loggedIn) {
-        return <Navigate to="/welcome" />;
+        return <Navigate to="/" />;
     }
 
     return (
@@ -71,8 +73,6 @@ export default function LoginPage() {
             <div className='americaya'>
                 <h2>AMERICA YA :D</h2>
             </div>
-    </div>
-    
-    
+        </div>
     );
 }
