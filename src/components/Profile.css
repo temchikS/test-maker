@@ -1,0 +1,77 @@
+
+.Welcome {
+    background-color: rgba(226, 191, 226, 0.8); 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.HeaderStyle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background-color: rgba(179, 104, 179, 0.8);
+    background-size:cover;
+    background-position: center;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.Header-Logo img {
+    width: 80px; 
+    position: absolute;
+    margin-top: -40px;
+    left: 10px;
+}
+.Header-Button {
+    position: absolute;
+    left: 100px;
+    color: rgb(3, 3, 3); 
+    display: flex;
+    flex-direction: row;
+}
+.Header-Navigacion{
+    position: absolute;
+    right: 30px;
+    color: black;
+}
+.panel{
+    position: fixed;
+    color:black;
+    display: grid;
+}
+.styleb{
+    color: white; /* Изменение цвета текста на белый */
+    background-color: blue; /* Изменение цвета фона на синий */
+}
+
+.styled{
+    color: white; /* Изменение цвета текста на белый */
+    background-color: red; /* Изменение цвета фона на красный */
+}
+.editable-square {
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.editable-square:hover {
+    background-color: #ddd;
+}
+
+.editable-square-container {
+    margin-top: 20px;
+}
+
