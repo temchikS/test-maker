@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
-import "./MainPage.css";
 export default function MainPage() {
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
@@ -77,20 +76,24 @@ export default function MainPage() {
     }
 
     return (
-    <div className="Welcome">
+    <div className="main">
         <div className='HeaderStyle'>
-            <div className='Header-Logo'>
-                <img src="https://avatars.mds.yandex.net/i?id=dd8fe0b2db4aeb94c73c17ff7a3ea0ddc7405232-12423213-images-thumbs&n=13" alt="Hentai" />
+            <div className='mini-profile our-logo'>
+                <img src="" alt="logo" />
+                <p>название</p>
             </div>
             
-            <div className='Header-Button'>
+            {/* <div className='Header-Button'>
                   <ButtonWithPanel panelComponent={Panel1}>Ez solo</ButtonWithPanel>
                   <ButtonWithPanel panelComponent={Panel2}>Ez solo2</ButtonWithPanel>
             </div>
             <div className='Header-Navigacion'>
                 <p>О нас</p>
+            </div> */}
+            <div className='mini-profile'>
+                <p>{userInfo && userInfo.username}</p>
+                <img src="https://avatars.mds.yandex.net/i?id=dd8fe0b2db4aeb94c73c17ff7a3ea0ddc7405232-12423213-images-thumbs&n=13" alt="avatar" />   
             </div>
-
         </div>
         {userInfo && (
             <p>Привет, {userInfo.username} (Возраст: {userInfo.userAge})</p>
