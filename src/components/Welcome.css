@@ -1,0 +1,162 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .Welcome {
+    background-color: rgba(226, 191, 226, 0.8); 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Поддерживаем минимальную высоту, чтобы контент не перекрывал футер */
+  }
+  
+  .Welcome-content {
+    flex-grow: 1;
+  }
+  
+  .HeaderStyle {
+
+    position: fixed; /* Фиксируем хедер наверху */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background-color: rgba(179, 104, 179, 0.8);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 999; /* Устанавливаем z-index, чтобы хедер был поверх другого контента */
+  }
+  
+  
+  .FooterStyle {
+    width: 100%;
+    height: 100px;
+    background-color: rgba(179, 104, 179, 0.8);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .Header-Img img {
+    width: 70px; 
+    position: absolute;
+    margin-top: -40px;
+    left: 1280px;
+    border-radius: 50px;
+  }
+  
+  .Header-Logo img {
+    width: 100px; 
+    position: absolute;
+    margin-top: -30px;
+    left: 10px;
+  }
+  
+  .survey-container {
+    margin-top: 120px;
+    border-radius: 35px;
+    background-color: rgb(80, 80, 206);
+    width: 600px; /* Ширина контейнера опроса */
+    height: 300px; /* Высота контейнера опроса */
+    margin-right: 700px; /* Отступ справа */
+    border: 1px solid #000; /* Рамка контейнера */
+    display: flex; /* Используем flexbox для центрирования содержимого */
+    justify-content: center; /* Центрирование по горизонтали */
+    align-items: center; /* Центрирование по вертикали */
+  }
+  
+  .survey-info {
+    color: rgb(105, 59, 67); /* Цвет текста */
+    font-family: Arial, Helvetica; /* Шрифт текста */
+    text-align: center; /* Выравнивание текста по центру */
+  }
+  
+  .survey-info h2 {
+    margin-bottom: 20px; /* Отступ снизу для заголовка */
+  }
+  
+
+  
+  
+  .Footer-Logo img {
+    width: 80px; 
+  }
+  
+  .Footer-Navigation {
+    color: white;
+  }
+  
+  .pokemon-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #f2f2f2;
+    position: relative;
+    overflow: hidden; /* Изменено на hidden для скрытия скрытия части кнопок */
+  }
+  
+  .scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    cursor: pointer;
+    z-index: 1; /* Чтобы кнопки были над картами */
+  }
+  
+  .scroll-button.prev {
+    left: 0;
+  }
+  
+  .scroll-button.next {
+    right: 0;
+  }
+  
+  .pokemon-cards {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 10px;
+    margin-left: 45px; /* Добавлено для учета ширины кнопки */
+    margin-right: 45px; /* Добавлено для учета ширины кнопки */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Добавлено для плавной прокрутки на мобильных устройствах */
+  }
+  
+  .pokemon-card {
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 0 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  .pokemon-card img {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 10px;
+  }
+  
+  .pokemon-details h3,
+  .pokemon-details p {
+    margin: 0; /* Убрана нижняя маржа для заголовков и текста */
+  }
+  .Catalog-Text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Для горизонтального центрирования текста */
+}
+ 

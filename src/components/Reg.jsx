@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 export default function RegistrationPage() {
     const [username, setUsername] = useState('');
+    const [fio, setFio] = useState('');
     const [age, setAge] = useState('');
     const [password, setPassword] = useState('');
+    const [loggedIn, setLoggedIn] = useState(false);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    
+
     const handleRegistration = async () => {
         const userData = {
             username: username,
+            fio: fio,
             age: parseInt(age),
             password: password,
             role: "user"
@@ -31,8 +33,7 @@ export default function RegistrationPage() {
                 }
                 throw new Error('Ошибка при регистрации');
             } else {
-                localStorage.removeItem('token');
-                navigate('/login');
+                setLoggedIn(true);
             }
     
         } catch (error) {
@@ -40,6 +41,9 @@ export default function RegistrationPage() {
         }
     };
     
+    if (loggedIn) {
+        return <Navigate to="/welcome" />;
+    }
     return (
         <div className="login-container">
             <div className="input-container">
@@ -48,6 +52,14 @@ export default function RegistrationPage() {
                     placeholder="Имя пользователя"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                />
+            </div>
+            <div className="input-container">
+                <input
+                    type="text"
+                    placeholder="ФИО"
+                    value={fio}
+                    onChange={(e) => setFio(e.target.value)}
                 />
             </div>
             <div className="input-container">
