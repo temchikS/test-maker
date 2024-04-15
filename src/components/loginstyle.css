@@ -17,9 +17,9 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: rgba(226, 191, 226, 0.8);
+    background-color: rgba(226, 191, 226, 0.8); /* Добавим небольшой прозрачный фон, чтобы контент был более читаемым */
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 10px; /* Добавим скругление краев контейнера */
 }
 
 .input-container {

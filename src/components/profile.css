@@ -1,0 +1,10 @@
+.Profile {
+    background-color: rgba(226, 191, 226, 0.8); 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
