@@ -146,11 +146,17 @@ button:hover {
 /* ПРОФИЛЬ */
 
 /* СОЗДАНИЕ ТЕСТА */
+.test-make{
+    display: flex;
+    flex-wrap: wrap;
+    width: 422px;
+    padding: 50px;
+    background-color: white;
+}
 
 
 
-
-
+/* ОБЩЕЕ */
 .background{
    color: #bb68b0;
    font-size: medium;

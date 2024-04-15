@@ -33,6 +33,7 @@ export default function LoginPage() {
                 const data = await response.json();
                 console.log(data);
                 localStorage.setItem('token', data.token); 
+                localStorage.setItem('username',data.username);
                 setLoggedIn(true);
             }
         } catch (error) {
@@ -66,7 +67,7 @@ export default function LoginPage() {
             <button onClick={handleLogin}>Войти</button>
             {error && <p className="error-message">{error}</p>}
             <div className="register-link-container">
-                <Link to="/reg" className="register-link">
+                <Link to="/registration" className="register-link">
                     <p>Нет аккаунта? Зарегистрируйтесь</p>
                 </Link>
             </div>
