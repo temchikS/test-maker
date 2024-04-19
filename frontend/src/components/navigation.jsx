@@ -5,7 +5,10 @@ export default function Navigation(){
         <div className='navigation-panel'>
            <Link to="/login"><button>Login</button></Link> 
            <Link to="/registration"><button>Registration</button></Link> 
-           <Link to="/"><button>Profile</button></Link> 
+           <Link to="/"><button>Main</button></Link> 
+           <Link to="/profile"><button>Profile</button></Link> 
+           <Link to="/maketest"><button>make test</button></Link> 
+           <Link to="/taketest"><button>take test</button></Link> 
         </div>
     );
 }
