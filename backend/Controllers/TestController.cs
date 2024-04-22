@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,18 +22,29 @@ namespace WebApplication2.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Test>>> GetTests()
+        public async Task<ActionResult<IEnumerable<Test>>> GetAllTests()
         {
             return await _context.Tests.ToListAsync();
         }
-
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Test>>> GetNotVerifiedTests()
+        {
+            var notVerifiedTests = await _context.Tests.Where(t => !t.IsVerified).ToListAsync();
+            return notVerifiedTests;
+        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Test>>> GetTests()
+        {
+            var verifiedTests = await _context.Tests.Where(t => t.IsVerified).ToListAsync();
+            return verifiedTests;
+        }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Test>> GetTestById(int id)
+        public async Task<ActionResult<Test>> GetVerifiedTestById(int id)
         {
             var test = await _context.Tests
                 .Include(t => t.Questions) 
                 .ThenInclude(q => q.Answers) 
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id && t.IsVerified);
 
             if (test == null)
             {
@@ -40,14 +53,65 @@ namespace WebApplication2.Controllers
 
             return test;
         }
-
-        [HttpPost]
-        public async Task<ActionResult<Test>> CreateTest(Test test)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Test>> GetNotVerifiedTestById(int id)
         {
+            var test = await _context.Tests
+                .Include(t => t.Questions)
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsVerified);
+
+            if (test == null)
+            {
+                return NotFound();
+            }
+
+            return test;
+        }
+        [HttpPut("{id}")]
+        [Authorize(Roles = "admin")] 
+        public async Task<IActionResult> VerifyTest(int id)
+        {
+            var test = await _context.Tests.FindAsync(id);
+            if (test == null)
+            {
+                return NotFound();
+            }
+            test.IsVerified = true;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Test verified." });
+        }
+        [HttpPost]
+        public async Task<ActionResult<Test>> CreateTest([FromForm] Test test, IFormFile coverImage)
+        {
+            if (coverImage != null && coverImage.Length > 0)
+            {
+                var fileName = Path.GetFileName(coverImage.FileName);
+                var filePath = Path.Combine("Images", "TestPictures", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await coverImage.CopyToAsync(stream);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await coverImage.CopyToAsync(stream);
+                }
+                test.CoverImagePath = $"http://localhost:5228/Images/TestPictures/{fileName}";
+
+            }
+            var createdByUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == test.CreatedBy);
+            if (createdByUser == null)
+            {
+                return NotFound($"Пользователь с именем {test.CreatedBy} не найден.");
+            }
+            createdByUser.MakedTests ??= new List<MakedTest>(); 
+            createdByUser.MakedTests.Add(new MakedTest { TestId = test.Id });
             _context.Tests.Add(test);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTestById), new { id = test.Id }, test);
+            return CreatedAtAction(nameof(GetNotVerifiedTestById), new { id = test.Id }, test);
         }
 
         [HttpPut("{id}")]

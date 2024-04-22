@@ -34,7 +34,10 @@ namespace WebApplication2.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users
+                                    .Include(u => u.MakedTests)
+                                    .Include(u => u.PassedTests)
+                                    .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
             {
@@ -81,6 +84,32 @@ namespace WebApplication2.Controllers
 
             return NoContent();
         }
+        [HttpPost("MakeAdmin/{id}")]
+        public async Task<IActionResult> MakeUserAdmin(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (user.Role == "admin")
+            {
+                return BadRequest("User is already an admin.");
+            }
+
+            user.Role = "admin";
+            _context.Entry(user).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok($"User {user.Username} has been made an admin.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error making user an admin: {ex.Message}");
+            }
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
@@ -101,7 +130,46 @@ namespace WebApplication2.Controllers
         {
             return _context.Users.Any(e => e.Id == id);
         }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("No file uploaded.");
+                }
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+                if (!int.TryParse(userId, out var id))
+                {
+                    return Unauthorized("Invalid user ID.");
+                }
+
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                var fileName = Path.GetFileName(file.FileName);
+                var filePath = Path.Combine("Images", "ProfilePictures", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                user.ProfilePicture = $"http://localhost:5228/Images/ProfilePictures/{fileName}";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Avatar updated.", path = user.ProfilePicture });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
 
         [HttpPost("Login")]
         public async Task<IActionResult> Authorization([FromBody] LoginRequestModel model)
@@ -109,17 +177,23 @@ namespace WebApplication2.Controllers
             string username = model.Username;
             string password = model.Password;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
             if (user == null)
             {
-                return Unauthorized();
+                return NotFound("Пользователь с таким именем не найден.");
+            }
+
+            if (user.Password != password)
+            {
+                return Unauthorized("Неверный пароль.");
             }
 
             var token = GenerateJwtToken(user);
 
             return Ok(new { Username = user.Username, Token = token });
         }
+
 
         private string GenerateJwtToken(User user)
         {
@@ -167,12 +241,29 @@ namespace WebApplication2.Controllers
         }
         [HttpGet]
         [Authorize]
-        public IActionResult MainPage()
+        public async Task<IActionResult> GetUserData()
         {
-            var userAge = User.FindFirst("Age")?.Value;
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value; 
-            var username = User.FindFirst(ClaimTypes.Name)?.Value;
-            return Ok(new { UserAge = userAge, UserRole = userRole, Username = username });
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(userId, out var id))
+            {
+                return Unauthorized("Invalid user ID.");
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(new
+            {
+                Username = user.Username,
+                UserAge = user.Age,
+                UserRole = user.Role,
+                ProfilePicture = user.ProfilePicture
+        });
+
         }
 
     }
