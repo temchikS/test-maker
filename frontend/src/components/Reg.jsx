@@ -9,11 +9,21 @@ export default function RegistrationPage() {
     const navigate = useNavigate();
     
     const handleRegistration = async () => {
+        if (username.length < 3) {
+            setError('Имя пользователя должно содержать минимум три символа');
+            return;
+        }
+        if (password.length < 5) {
+            setError('Пароль должен содержать минимум пять символов');
+            return;
+        }
         const userData = {
             username: username,
             age: parseInt(age),
             password: password,
-            role: "user"
+            role: "user",
+            makedTests: [],
+            passedTests: []
         };
     
         try {
@@ -44,6 +54,7 @@ export default function RegistrationPage() {
         <div className="login-container">
             <div className="input-container">
                 <input
+                    className='input-login-reg'
                     type="text"
                     placeholder="Имя пользователя"
                     value={username}
@@ -52,6 +63,7 @@ export default function RegistrationPage() {
             </div>
             <div className="input-container">
                 <input
+                    className='input-login-reg'
                     type="number"
                     placeholder="Возраст"
                     value={age}
@@ -60,6 +72,7 @@ export default function RegistrationPage() {
             </div>
             <div className="input-container">
                 <input
+                    className='input-login-reg'
                     type="password"
                     placeholder="Пароль"
                     value={password}

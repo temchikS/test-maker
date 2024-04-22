@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import Header from './Header';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function MakeTest() {
     const [testName, setTestName] = useState('');
     const [questions, setQuestions] = useState([{ id: 1, questionText: '', answers: [{ id: 1, answerText: '', isCorrect: false }] }]);
+    const [coverImage, setCoverImage] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
-
+    const navigate = useNavigate();
     function addQuestion() {
         const newQuestion = { id: questions.length + 1, questionText: '', answers: [{ id: 1, answerText: '', isCorrect: false }] };
         setQuestions([...questions, newQuestion]);
@@ -36,34 +39,47 @@ export default function MakeTest() {
         });
         setQuestions(updatedQuestions);
     }
-    
-
     function handleSubmit() {
-        if (testName.trim() === '' || questions.some(question => question.questionText.trim() === '' || question.answers.some(answer => answer.answerText.trim() === ''))) {
-            setErrorMessage('Пожалуйста, заполните все поля');
+        // Проверяем, что есть хотя бы один вопрос
+        if (questions.length === 0) {
+            setErrorMessage('Добавьте хотя бы один вопрос');
             return;
         }
+        
+        // Проверяем, что каждый вопрос имеет минимум два варианта ответа
+        const hasAtLeastTwoAnswers = questions.every(question => question.answers.length >= 2);
+        if (!hasAtLeastTwoAnswers) {
+            setErrorMessage('Каждый вопрос должен иметь как минимум два варианта ответа');
+            return;
+        }
+    
+        // Проверяем, что хотя бы один из вариантов ответа помечен как правильный
+        const hasAtLeastOneCorrectAnswer = questions.every(question => question.answers.some(answer => answer.isCorrect));
+        if (!hasAtLeastOneCorrectAnswer) {
+            setErrorMessage('Каждый вопрос должен иметь хотя бы один правильный ответ');
+            return;
+        }
+    
+        // Проверки пройдены, можно отправлять данные на сервер
         const username = localStorage.getItem('username');
-        const testData = {
-            testName: testName,
-            createdBy: username,
-            questions: questions.map(question => {
-                const { id, ...questionWithoutId } = question;
-                return {
-                    ...questionWithoutId,
-                    answers: question.answers.map(answer => {
-                        const { id, ...answerWithoutId } = answer;
-                        return answerWithoutId;
-                    })
-                };
-            })
-        };
+    
+        const formData = new FormData();
+        formData.append('testName', testName);
+        formData.append('createdBy', username);
+        formData.append('coverImage', coverImage);
+        formData.append('tags', []);
+        formData.append('userRating', []);
+        questions.forEach((question, index) => {
+            formData.append(`questions[${index}].questionText`, question.questionText);
+            question.answers.forEach((answer, ansIndex) => {
+                formData.append(`questions[${index}].answers[${ansIndex}].answerText`, answer.answerText);
+                formData.append(`questions[${index}].answers[${ansIndex}].isCorrect`, answer.isCorrect);
+            });
+        });
+    
         fetch('http://localhost:5228/api/Test/CreateTest', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(testData)
+            body: formData
         })
         .then(response => {
             if (!response.ok) {
@@ -71,19 +87,36 @@ export default function MakeTest() {
             }
             return response.json();
         })
-        console.log(testData);
-        setErrorMessage('');
+        .then(data => {
+            console.log(data);
+            navigate('/');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            setErrorMessage('Ошибка при отправке данных');
+        });
     }
     
+    
+    const handleCoverImageChange = (e) => {
+        const file = e.target.files[0];
+        setCoverImage(file);
+    };
 
     return (
         <div className="main">
+            <Header/>
             <div className="test-make">
                 <input
                     type="text"
                     placeholder="Название теста"
                     value={testName}
                     onChange={(e) => setTestName(e.target.value)}
+                />
+                 <input
+                    type="file"
+                    accept="image/*" 
+                    onChange={handleCoverImageChange}
                 />
                 {questions.map((question, questionIndex) => (
                     <div key={question.id}>

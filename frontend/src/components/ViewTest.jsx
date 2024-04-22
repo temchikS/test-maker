@@ -7,9 +7,6 @@ export default function PassTest() {
     const [test, setTest] = useState(null);
     const [error, setError] = useState(null);
     const [selectedAnswers, setSelectedAnswers] = useState({}); // Состояние для хранения выбранных ответов
-    const [isStarted, setStarted] = useState(false);
-    const [isFinished, setFinished] = useState(false);
-    const [timeElapsed, setTimeElapsed] = useState(0);
 
     useEffect(() => {
         async function fetchTestById() {
@@ -34,16 +31,6 @@ export default function PassTest() {
         fetchTestById();
     }, [id]); 
 
-    useEffect(() => {
-        let intervalId;
-        if (isFinished) {
-            intervalId = setInterval(() => {
-                setTimeElapsed(prevTime => prevTime + 1);
-            }, 1000);
-        }
-        return () => clearInterval(intervalId);
-    }, [isFinished]);
-
     if (error) {
         return <div>Произошла ошибка: {error}</div>;
     }
@@ -55,21 +42,8 @@ export default function PassTest() {
         }));
     };
 
-    const handleStart = () => {
-        setStarted(true);
-        setFinished(true);
-    };
-
     const handleSubmit = () => {
-        // Здесь вы можете добавить код для отправки выбранных ответов на сервер
-        // После отправки можно сделать проверку ответов на правильность, используя свойство IsCorrect
-        // Например:
-        const correctAnswers = test.questions.filter(question => {
-            const selectedAnswerId = selectedAnswers[question.questionId];
-            return selectedAnswerId && question.answers.find(answer => answer.answerId === selectedAnswerId).isCorrect;
-        });
-        setFinished(false);
-        console.log('Количество правильных ответов:', correctAnswers.length);
+        // Вы можете добавить код для отправки выбранных ответов на сервер
     };
 
     return (
@@ -77,12 +51,9 @@ export default function PassTest() {
             <Header/>
             {test ? (
                 <div>
-                    <img src={test.coverImagePath} alt="" />
                     <h2>{test.testName}</h2>
                     <p>Автор: {test.createdBy}</p>
-                    <button className={!isStarted ? '' : 'hidden'} onClick={handleStart}>Начать тест</button>
-                    <div className={`pass-test ${isStarted ? '' : 'hidden'}`}>
-                        <p>Времени прошло: {timeElapsed} секунд</p>
+                    <div>
                         {test.questions.map(question => (
                             <div key={question.questionId}>
                                 <p>{question.questionText}</p>
@@ -103,8 +74,8 @@ export default function PassTest() {
                                 </ul>
                             </div>
                         ))}
-                        <button onClick={handleSubmit}>Отправить ответы</button>
                     </div>
+                    <button onClick={handleSubmit}>Отправить ответы</button>
                 </div>
             ) : (
                 <div>Загрузка...</div>

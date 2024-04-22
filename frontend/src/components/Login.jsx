@@ -26,7 +26,9 @@ export default function LoginPage() {
             if (!response.ok) {
                 if (response.status === 401) {
                     setError('Неправильный логин или пароль');
-                } else {
+                }else if (response.status === 404){
+                    setError('Пользователь с таким именем не найден');
+                }else {
                     throw new Error('Ошибка при выполнении запроса');
                 }
             } else {
@@ -50,6 +52,7 @@ export default function LoginPage() {
         <div className="login-container">
             <div className="input-container">
                 <input
+                className='input-login-reg'
                     type="text"
                     placeholder="Логин"
                     value={username}
@@ -58,6 +61,7 @@ export default function LoginPage() {
             </div>
             <div className="input-container">
                 <input
+                className='input-login-reg'
                     type="password"
                     placeholder="Пароль"
                     value={password}

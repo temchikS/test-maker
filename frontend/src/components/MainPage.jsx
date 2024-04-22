@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Header from './Header';
 
 export default function MainPage() {
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
-    const [showSidebar, setShowSidebar] = useState(false);
+
     const [tests, setTests] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchUserData() {
             try {
-                const response = await fetch('http://localhost:5228/api/User/MainPage', {
+                const response = await fetch('http://localhost:5228/api/User/GetUserData', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -51,57 +52,30 @@ export default function MainPage() {
         fetchTests();
     }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/login');
-    };
-
-    if (error === 'Unauthorized') {
-        navigate('/login');
-    }
-
-    function toggleSideBar() {
-        setShowSidebar(!showSidebar);
+    if (!userInfo) {
+        return <div>Loading...</div>; 
     }
 
     return (
         <div className="main">
-            <div className='HeaderStyle'>
-                <div className='mini-profile our-logo'>
-                    <img src="" alt="logo" />
-                    <p>название</p>
-                </div>
-                <div className='mini-profile'>
-                    <p>{userInfo && userInfo.username}</p>
-                    <img onClick={toggleSideBar} className='user-avatar' src="https://avatars.mds.yandex.net/i?id=dd8fe0b2db4aeb94c73c17ff7a3ea0ddc7405232-12423213-images-thumbs&n=13" alt="avatar" />
-                </div>
-                <div className={`sidebar ${showSidebar ? 'show' : ''}`}>
-                    <button onClick={toggleSideBar}>закрыть</button>
-                    <h1>Меню</h1>
-                    <div className='menu'>
-                        <ul>
-                            <li>Профиль</li>
-                            <li>Настройки</li>
-                            <li>ЧОТА еще</li>
-                        </ul>
-                    </div>
-                    <button onClick={handleLogout}>Выйти</button>
-                </div>
-            </div>
-            <div className='main main-section'>
-                <div className='statistic'>
+            <Header/>
+            <div className='main-section'>
+                <div className='section statistic'>
                     статистика
                 </div>
-                <div className='main actual-tests-section'>
+                <div className='section actual-tests-section'>
                     <h2>Актуальные тесты</h2>
-                    {tests.map(test => (
-                        <Link key={test.id} to={`/pass-test/${test.id}`}>
+                    <div className='tests-map'>
+                        {tests.map(test => (
+                        <Link className='link-unstyled' key={test.id} to={`/pass-test/${test.testName}/${test.id}`}>
                             <div className='test-card'>
+                                <img className='cover-img' src={test.coverImagePath} alt="cover image" />
                                 <h3>{test.testName}</h3>
                                 <p>Автор: {test.createdBy}</p>
                             </div>
                         </Link>
-                    ))}
+                    ))}</div>
+                    
                 </div>
             </div>
         </div>
