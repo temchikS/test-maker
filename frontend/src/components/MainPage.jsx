@@ -12,7 +12,7 @@ export default function MainPage() {
     useEffect(() => {
         async function fetchUserData() {
             try {
-                const response = await fetch('http://localhost:5228/api/User/GetUserData', {
+                const response = await fetch('http://26.226.166.33:5228/api/User/GetUserData', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -20,6 +20,7 @@ export default function MainPage() {
                 });
                 if (!response.ok) {
                     if (response.status === 401) {
+                        navigate('/login');
                         throw new Error('Unauthorized');
                     } else {
                         throw new Error('Ошибка при выполнении запроса');
@@ -38,11 +39,12 @@ export default function MainPage() {
     useEffect(() => {
         async function fetchTests() {
             try {
-                const response = await fetch('http://localhost:5228/api/Test/GetTests');
+                const response = await fetch('http://26.226.166.33:5228/api/Test/GetTests');
                 if (!response.ok) {
                     throw new Error('Ошибка при получении тестов');
                 }
                 const data = await response.json();
+                console.log(data);
                 setTests(data);
             } catch (error) {
                 console.error('Произошла ошибка при получении тестов:', error);
@@ -69,9 +71,12 @@ export default function MainPage() {
                         {tests.map(test => (
                         <Link className='link-unstyled' key={test.id} to={`/pass-test/${test.testName}/${test.id}`}>
                             <div className='test-card'>
-                                <img className='cover-img' src={test.coverImagePath} alt="cover image" />
+                                <img className='cover-img' src={test.imageUrl} alt="cover image" />
                                 <h3>{test.testName}</h3>
                                 <p>Автор: {test.createdBy}</p>
+                                <div>
+                                    <p>Теги: {test.tags.length > 3 ? test.tags.slice(0, 3).map(tag => tag.tagText).join(', ') + ' ...' : test.tags.map(tag => tag.tagText).join(', ')}</p>
+                                </div>
                             </div>
                         </Link>
                     ))}</div>

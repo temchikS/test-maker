@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import Header from './Header';
 import { Link, useNavigate } from 'react-router-dom';
+import krestik from '../images/krestik.png';
 
 export default function MakeTest() {
     const [testName, setTestName] = useState('');
     const [questions, setQuestions] = useState([{ id: 1, questionText: '', answers: [{ id: 1, answerText: '', isCorrect: false }] }]);
     const [coverImage, setCoverImage] = useState(null);
+    const [description,setDescription] = useState('');
+    const [tags, setTags] = useState([]);
+    const [customTag, setCustomTag] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+
     function addQuestion() {
         const newQuestion = { id: questions.length + 1, questionText: '', answers: [{ id: 1, answerText: '', isCorrect: false }] };
         setQuestions([...questions, newQuestion]);
-    };
+    }
 
     function addAnswer(questionId) {
         const updatedQuestions = questions.map(question => {
@@ -31,7 +36,7 @@ export default function MakeTest() {
                     if (answer.id === answerId) {
                         return { ...answer, isCorrect: true };
                     }
-                    return { ...answer, isCorrect: false }; // Сбрасываем все остальные ответы в неправильное состояние
+                    return { ...answer, isCorrect: false }; 
                 });
                 return { ...question, answers: updatedAnswers };
             }
@@ -39,36 +44,37 @@ export default function MakeTest() {
         });
         setQuestions(updatedQuestions);
     }
+
     function handleSubmit() {
-        // Проверяем, что есть хотя бы один вопрос
         if (questions.length === 0) {
             setErrorMessage('Добавьте хотя бы один вопрос');
             return;
         }
         
-        // Проверяем, что каждый вопрос имеет минимум два варианта ответа
         const hasAtLeastTwoAnswers = questions.every(question => question.answers.length >= 2);
         if (!hasAtLeastTwoAnswers) {
             setErrorMessage('Каждый вопрос должен иметь как минимум два варианта ответа');
             return;
         }
-    
-        // Проверяем, что хотя бы один из вариантов ответа помечен как правильный
         const hasAtLeastOneCorrectAnswer = questions.every(question => question.answers.some(answer => answer.isCorrect));
         if (!hasAtLeastOneCorrectAnswer) {
             setErrorMessage('Каждый вопрос должен иметь хотя бы один правильный ответ');
             return;
         }
-    
-        // Проверки пройдены, можно отправлять данные на сервер
         const username = localStorage.getItem('username');
     
         const formData = new FormData();
         formData.append('testName', testName);
         formData.append('createdBy', username);
         formData.append('coverImage', coverImage);
-        formData.append('tags', []);
+        formData.append('description', description);
+        // formData.append('makedTestId', 0);
+        formData.append('rating', 0);
+        formData.append('ImageUrl', null);
         formData.append('userRating', []);
+        tags.forEach((tag, index) => {
+            formData.append(`tags[${index}].tagText`, tag.tagText);
+        });
         questions.forEach((question, index) => {
             formData.append(`questions[${index}].questionText`, question.questionText);
             question.answers.forEach((answer, ansIndex) => {
@@ -76,8 +82,7 @@ export default function MakeTest() {
                 formData.append(`questions[${index}].answers[${ansIndex}].isCorrect`, answer.isCorrect);
             });
         });
-    
-        fetch('http://localhost:5228/api/Test/CreateTest', {
+        fetch('http://26.226.166.33:5228/api/Test/CreateTest', {
             method: 'POST',
             body: formData
         })
@@ -96,28 +101,45 @@ export default function MakeTest() {
             setErrorMessage('Ошибка при отправке данных');
         });
     }
-    
-    
+
+    function removeTag(tagToRemove) {
+        setTags(tags.filter(tag => tag !== tagToRemove));
+    }
+
     const handleCoverImageChange = (e) => {
         const file = e.target.files[0];
         setCoverImage(file);
     };
+
+    function handleAddTag() {
+        if (customTag.trim() !== '') {
+            setTags([...tags, { tagText: customTag }]);
+            setCustomTag('');
+        }
+    }
 
     return (
         <div className="main">
             <Header/>
             <div className="test-make">
                 <input
+                    type="file"
+                    accept="image/*" 
+                    onChange={handleCoverImageChange}
+                />
+                <input
                     type="text"
                     placeholder="Название теста"
                     value={testName}
                     onChange={(e) => setTestName(e.target.value)}
                 />
-                 <input
-                    type="file"
-                    accept="image/*" 
-                    onChange={handleCoverImageChange}
+                <input
+                    type="text"
+                    placeholder="Описание"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                 />
+                
                 {questions.map((question, questionIndex) => (
                     <div key={question.id}>
                         <input
@@ -151,7 +173,24 @@ export default function MakeTest() {
                     </div>
                 ))}
                 <button className="add-answ-btn" onClick={addQuestion}>Добавить вопрос</button>
-                <button onClick={handleSubmit}>Подтвердить</button>
+                <div>
+                    <label>Выбранные теги:</label>
+                    <ul>
+                        {tags.map((tag, index) => (
+                            <li className='teg' key={index}><img src={krestik} className='remove-teg-img' alt='remove-teg' onClick={() => removeTag(tag)}/>{tag.tagText}</li>
+                        ))}
+                    </ul>
+                </div>
+                <div>
+                    <label>Добавить собственный тег:</label>
+                    <input
+                        type="text"
+                        value={customTag}
+                        onChange={(e) => setCustomTag(e.target.value)}
+                    />
+                    <button onClick={handleAddTag}>Добавить</button>
+                </div>
+                <button onClick={handleSubmit}>Создать тест</button>
                 {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
             </div>
         </div>

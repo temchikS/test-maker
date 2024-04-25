@@ -21,7 +21,7 @@ export default function Header(){
     return(
         <div className='HeaderStyle'>
             <div className='mini-profile our-logo'>
-                <img src="" alt="logo" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Youtube.png" alt="logo" />
                 <p>название</p>
             </div>
             <div className='mini-profile'>

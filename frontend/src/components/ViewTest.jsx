@@ -11,7 +11,7 @@ export default function PassTest() {
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://localhost:5228/api/Test/GetVerifiedTestById/${id}`);
+                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetVerifiedTestById/${id}`);
                 if (!response.ok) {
                     throw new Error('Ошибка при получении теста');
                 }

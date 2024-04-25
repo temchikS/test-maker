@@ -20,7 +20,7 @@ export default function ProfilePage() {
         formData.append('file', image);
 
         try {
-            const response = await fetch('http://localhost:5228/api/User/UploadProfilePicture', {
+            const response = await fetch('http://26.226.166.33:5228/api/User/UploadProfilePicture', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

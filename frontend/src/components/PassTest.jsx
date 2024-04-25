@@ -1,25 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import { UserContext} from '../contexts/userContext';
 import Header from './Header';
+import goldZvezda from '../images/goldZvezda.png';
+import goldGrayZvezda from '../images/gold-grayZvezda.png';
+import grayZvezda from '../images/grayZvezda.png';
 
 export default function PassTest() {
     const { id } = useParams();
     const [test, setTest] = useState(null);
     const [error, setError] = useState(null);
-    const [selectedAnswers, setSelectedAnswers] = useState({}); // Состояние для хранения выбранных ответов
+    const [selectedAnswers, setSelectedAnswers] = useState({});
     const [isStarted, setStarted] = useState(false);
     const [isFinished, setFinished] = useState(false);
     const [timeElapsed, setTimeElapsed] = useState(0);
-
+    const [passedTest,setPassedTest] = useState(null);
+    const userInfo = useContext(UserContext);
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://localhost:5228/api/Test/GetVerifiedTestById/${id}`);
+                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetVerifiedTestById/${id}`);
                 if (!response.ok) {
                     throw new Error('Ошибка при получении теста');
                 }
                 const data = await response.json();
-                // Инициализируем состояние выбранных ответов для каждого вопроса
                 const initialSelectedAnswers = {};
                 data.questions.forEach(question => {
                     initialSelectedAnswers[question.questionId] = null;
@@ -33,7 +37,29 @@ export default function PassTest() {
         }
         fetchTestById();
     }, [id]); 
-
+    useEffect(() => {
+        async function fetchTestById() {
+            try {
+                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetUserPassedTest/PassedTest/${id}/${userInfo.userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Ошибка при получении пройденного теста');
+                }
+                const data = await response.json();
+                setPassedTest(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Произошла ошибка при получении пройденного теста:', error);
+            }
+        }
+        if (userInfo) {
+            fetchTestById();
+        }
+    }, [userInfo,isFinished]);
+    
     useEffect(() => {
         let intervalId;
         if (isFinished) {
@@ -60,26 +86,84 @@ export default function PassTest() {
         setFinished(true);
     };
 
-    const handleSubmit = () => {
-        // Здесь вы можете добавить код для отправки выбранных ответов на сервер
-        // После отправки можно сделать проверку ответов на правильность, используя свойство IsCorrect
-        // Например:
+    const handleSubmit = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('passedTestId', id);
+            formData.append('time', timeElapsed);
+            formData.append('result', calculateResult());
+            formData.append('maxQuestions', test.questions.length);
+    
+            const response = await fetch(`http://26.226.166.33:5228/api/User/PassTest/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: formData
+            });
+    
+            if (!response.ok) {
+                throw new Error('Ошибка при прохождении теста');
+            }
+            setFinished(false);
+            const data = await response.text();
+            console.log(data); // Обработка успешного ответа
+        } catch (error) {
+            console.error('Произошла ошибка при прохождении теста:', error);
+        }
+    };
+    
+    const calculateResult = () => {
+        // Расчет результата
         const correctAnswers = test.questions.filter(question => {
             const selectedAnswerId = selectedAnswers[question.questionId];
             return selectedAnswerId && question.answers.find(answer => answer.answerId === selectedAnswerId).isCorrect;
         });
-        setFinished(false);
-        console.log('Количество правильных ответов:', correctAnswers.length);
+        return correctAnswers.length;
+    };
+
+    // Функция для отображения рейтинга в виде звёздочек
+    const renderRatingStars = (rating) => {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars.push(<img key={i} className='star' src={goldZvezda} alt="gold star" />);
+            } else {
+                stars.push(<img key={i} className='star' src={grayZvezda} alt="gray star" />);
+            }
+        }
+        return stars;
     };
 
     return (
         <div className="main">
             <Header/>
             {test ? (
-                <div>
-                    <img src={test.coverImagePath} alt="" />
-                    <h2>{test.testName}</h2>
-                    <p>Автор: {test.createdBy}</p>
+                <div className='test-view'>
+                    <div className='test-img'>
+                        <img className='big-cover-img' src={test.imageUrl} alt="" />
+                        <h2>{test.testName}</h2> 
+                    </div>
+                    <div className='test-info-cont'>
+                        <div className='test-info'>
+                            <p>Описание: {test.description}</p>
+                            <p>Автор: {test.createdBy}</p>
+                            <p>Теги: {test.tags.map(tag => tag.tagText).join(', ')}</p>
+                            <div className='stars-cont'>{renderRatingStars(test.rating)}</div>
+
+                        </div>
+                        {passedTest ? (
+                        <div className='result'>
+                            <h2>Результаты прохождения теста:</h2>
+                            <p>Результат: {passedTest.result}/{passedTest.maxQuestions}</p>
+                            <p>Время прохождения: {passedTest.time} секунд</p>
+                        </div>
+                    ) : null}
+                    </div>
+                    
+                    
+
+                    {/* Вывод рейтинга в виде звёздочек */}
                     <button className={!isStarted ? '' : 'hidden'} onClick={handleStart}>Начать тест</button>
                     <div className={`pass-test ${isStarted ? '' : 'hidden'}`}>
                         <p>Времени прошло: {timeElapsed} секунд</p>

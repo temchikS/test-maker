@@ -18,11 +18,10 @@ const UserProvider = ({ children }) => {
                 });
                 if (!response.ok) {
                     navigate('/login');
-                    throw new Error('Unauthorized');
+                    // throw new Error('Unauthorized');
                 }
                 const data = await response.json();
                 setUserInfo(data);
-                console.log(data);
             } catch (error) {
                 console.error('Произошла ошибка при выполнении запроса:', error);
             }

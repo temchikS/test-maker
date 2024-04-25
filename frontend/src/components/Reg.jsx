@@ -22,12 +22,13 @@ export default function RegistrationPage() {
             age: parseInt(age),
             password: password,
             role: "user",
+            profilePicturePath:'p',
             makedTests: [],
             passedTests: []
         };
     
         try {
-            const response = await fetch('http://localhost:5228/api/User/RegisterUser/Registration', {
+            const response = await fetch('http://26.226.166.33:5228/api/User/RegisterUser/Registration', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,13 +63,17 @@ export default function RegistrationPage() {
                 />
             </div>
             <div className="input-container">
-                <input
-                    className='input-login-reg'
-                    type="number"
-                    placeholder="Возраст"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                />
+            <input
+                className='input-login-reg'
+                type="number"
+                placeholder="Возраст"
+                value={age}
+                onChange={(e) => {
+                    if (e.target.value <= 100) {
+                        setAge(e.target.value);
+                    }
+                }}
+            />
             </div>
             <div className="input-container">
                 <input
