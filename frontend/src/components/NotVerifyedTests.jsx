@@ -6,7 +6,7 @@ export default function NotVerTest(){
     useEffect(() => {
         async function fetchTests() {
             try {
-                const response = await fetch('http://26.226.166.33:5228/api/Test/GetNotVerifiedTests');
+                const response = await fetch('http://localhost:5228/api/Test/GetNotVerifiedTests');
                 if (!response.ok) {
                     throw new Error('Ошибка при получении тестов');
                 }

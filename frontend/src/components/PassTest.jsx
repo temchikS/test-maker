@@ -5,6 +5,7 @@ import Header from './Header';
 import goldZvezda from '../images/goldZvezda.png';
 import goldGrayZvezda from '../images/gold-grayZvezda.png';
 import grayZvezda from '../images/grayZvezda.png';
+import RatingStars from './Rating';
 
 export default function PassTest() {
     const { id } = useParams();
@@ -19,7 +20,7 @@ export default function PassTest() {
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetVerifiedTestById/${id}`);
+                const response = await fetch(`http://localhost:5228/api/Test/GetVerifiedTestById/${id}`);
                 if (!response.ok) {
                     throw new Error('Ошибка при получении теста');
                 }
@@ -40,7 +41,7 @@ export default function PassTest() {
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetUserPassedTest/PassedTest/${id}/${userInfo.userId}`, {
+                const response = await fetch(`http://localhost:5228/api/Test/GetUserPassedTest/PassedTest/${id}/${userInfo.userId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -94,7 +95,7 @@ export default function PassTest() {
             formData.append('result', calculateResult());
             formData.append('maxQuestions', test.questions.length);
     
-            const response = await fetch(`http://26.226.166.33:5228/api/User/PassTest/${id}`, {
+            const response = await fetch(`http://localhost:5228/api/User/PassTest/${id}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -140,30 +141,30 @@ export default function PassTest() {
             <Header/>
             {test ? (
                 <div className='test-view'>
-                    <div className='test-img'>
-                        <img className='big-cover-img' src={test.imageUrl} alt="" />
-                        <h2>{test.testName}</h2> 
-                    </div>
-                    <div className='test-info-cont'>
-                        <div className='test-info'>
-                            <p>Описание: {test.description}</p>
-                            <p>Автор: {test.createdBy}</p>
-                            <p>Теги: {test.tags.map(tag => tag.tagText).join(', ')}</p>
-                            <div className='stars-cont'>{renderRatingStars(test.rating)}</div>
-
+                    <div className='test-view-cont'>
+                        <div className='test-img'>
+                            <img className='big-cover-img' src={test.imageUrl} alt="" />
+                            <h2>{test.testName}</h2> 
                         </div>
-                        {passedTest ? (
-                        <div className='result'>
-                            <h2>Результаты прохождения теста:</h2>
-                            <p>Результат: {passedTest.result}/{passedTest.maxQuestions}</p>
-                            <p>Время прохождения: {passedTest.time} секунд</p>
-                        </div>
-                    ) : null}
-                    </div>
-                    
-                    
+                        <div className='test-info-cont'>
+                            <div className='test-info'>
+                                <p>Описание: {test.description}</p>
+                                <p>Автор: {test.createdBy}</p>
+                                <p>Теги: {test.tags.map(tag => tag.tagText).join(', ')}</p>
+                                <div className='stars-cont'>{renderRatingStars(test.rating)}</div>
 
-                    {/* Вывод рейтинга в виде звёздочек */}
+                            </div>
+                            {passedTest ? (
+                            <div className='result'>
+                                <h2>Результаты прохождения теста:</h2>
+                                <p>Результат: {passedTest.result}/{passedTest.maxQuestions}</p>
+                                <p>Время прохождения: {passedTest.time} секунд</p>
+                                <p>Оцените тест:</p>
+                                <RatingStars userId={userInfo.userId} userName={userInfo.username}/>
+                            </div>
+                        ) : null}
+                        </div>
+                    </div>
                     <button className={!isStarted ? '' : 'hidden'} onClick={handleStart}>Начать тест</button>
                     <div className={`pass-test ${isStarted ? '' : 'hidden'}`}>
                         <p>Времени прошло: {timeElapsed} секунд</p>

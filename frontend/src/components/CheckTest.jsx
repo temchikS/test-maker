@@ -11,7 +11,7 @@ export default function CheckTest() {
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetNotVerifiedTestById/${id}`);
+                const response = await fetch(`http://localhost:5228/api/Test/GetNotVerifiedTestById/${id}`);
                 if (!response.ok) {
                     throw new Error('Ошибка при получении теста');
                 }
@@ -43,7 +43,7 @@ export default function CheckTest() {
     };
     const handleSubmit = async () => {
         try {
-            const response = await fetch(`http://26.226.166.33:5228/api/Test/VerifyTest/${id}`, {
+            const response = await fetch(`http://localhost:5228/api/Test/VerifyTest/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -61,7 +61,7 @@ export default function CheckTest() {
     };
     const handleDelete = async () => {
         try{
-            const response = await fetch(`http://26.226.166.33:5228/api/Test/DeleteTest/${id}`,{
+            const response = await fetch(`http://localhost:5228/api/Test/DeleteTest/${id}`,{
                 method:'DELETE'
             });
             if (!response.ok) {

@@ -4,6 +4,16 @@ import Header from './Header';
 export default function ProfilePage() {
     const [image, setImage] = useState(null);
 
+    const handleDragOver = (event) => {
+        event.preventDefault();
+    };
+
+    const handleDrop = (event) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        setImage(file);
+    };
+
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         setImage(file);
@@ -20,7 +30,7 @@ export default function ProfilePage() {
         formData.append('file', image);
 
         try {
-            const response = await fetch('http://26.226.166.33:5228/api/User/UploadProfilePicture', {
+            const response = await fetch('http://localhost:5228/api/User/UploadProfilePicture', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -39,13 +49,36 @@ export default function ProfilePage() {
     };
 
     return (
-        <div>
+        <div className='main'>
+            <h2>Профиль</h2>
             <Header />
-            <h2>Profile Page</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="file" accept="image/*" onChange={handleImageChange} />
-                <button type="submit">Upload Image</button>
-            </form>
+            <div className='main-section'>
+                <div className='change-picture'>
+                    <form onSubmit={handleSubmit}>
+                        <div
+                            className="drop-area"
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
+                        >
+                            {image ? (
+                                <img src={URL.createObjectURL(image)} width={200} height={200} alt="Uploaded" />
+                            ) : (
+                                <p>Перетащите изображение</p>
+                            )}
+                        </div>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            style={{ display: 'none' }}
+                        />
+                        <button type="button" onClick={() => document.querySelector('input[type="file"]').click()}>
+                            Выбрать изображение
+                        </button>
+                        <button type="submit">Изменить аватар</button>
+                    </form>   
+                </div>
+            </div>
         </div>
     );
 }

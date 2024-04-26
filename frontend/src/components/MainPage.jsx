@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
-
+import makedTests from '../images/makedtest.png';
+import passedTests from '../images/passedTests.png';
 export default function MainPage() {
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
@@ -12,7 +13,7 @@ export default function MainPage() {
     useEffect(() => {
         async function fetchUserData() {
             try {
-                const response = await fetch('http://26.226.166.33:5228/api/User/GetUserData', {
+                const response = await fetch('http://localhost:5228/api/User/GetUserData', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -39,7 +40,7 @@ export default function MainPage() {
     useEffect(() => {
         async function fetchTests() {
             try {
-                const response = await fetch('http://26.226.166.33:5228/api/Test/GetTests');
+                const response = await fetch('http://localhost:5228/api/Test/GetTests');
                 if (!response.ok) {
                     throw new Error('Ошибка при получении тестов');
                 }
@@ -63,7 +64,19 @@ export default function MainPage() {
             <Header/>
             <div className='main-section'>
                 <div className='section statistic'>
-                    статистика
+                    <p>Статистика</p>
+                    <div className='statistic-test'>
+                        <img src={passedTests} alt="passedTests img" />
+                        <label>Тестов<br/>пройдено</label>
+                        
+                        {userInfo.createdTestsCount}
+                    </div>
+                    <div className='statistic-test'>
+                        <img src={makedTests} alt="makedTests img" />
+                        <label>Тестов<br/>создано</label>
+                        
+                        {userInfo.passedTestsCount}
+                    </div>
                 </div>
                 <div className='section actual-tests-section'>
                     <h2>Актуальные тесты</h2>

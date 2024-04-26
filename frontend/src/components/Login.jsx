@@ -15,7 +15,7 @@ export default function LoginPage() {
         }
 
         try {
-            const response = await fetch(`http://26.226.166.33:5228/api/User/Authorization/Login`, {
+            const response = await fetch(`http://localhost:5228/api/User/Authorization/Login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -5,12 +5,13 @@ const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState(null);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchUserData() {
             try {
-                const response = await fetch('http://26.226.166.33:5228/api/User/GetUserData', {
+                const response = await fetch('http://localhost:5228/api/User/GetUserData', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -21,6 +22,7 @@ const UserProvider = ({ children }) => {
                     // throw new Error('Unauthorized');
                 }
                 const data = await response.json();
+                // console.log(data);
                 setUserInfo(data);
             } catch (error) {
                 console.error('Произошла ошибка при выполнении запроса:', error);

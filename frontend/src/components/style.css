@@ -120,14 +120,33 @@
     flex-direction: column;
 }
 .statistic{
-    width: 450px;
-    height: 210px;
+    width: 380px;
+    height: 200px;
     background-color: rgba(244, 167, 18, 0.29);
     border-radius: 10px;
+    display: grid;
+    grid-template-columns: auto auto; /* Два столбца */
+    grid-template-rows: 20% 80%; 
+}
+.statistic p {
+    margin-left: 5px;
+    grid-column: 1 / -1; /* Занимает все колонки */
+}
+.statistic-test{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    gap: 15px; 
+}
+.statistic-test img{
+    width: 46px;
+    height: 51px;
 }
 .main-section{
     position:relative ;
-    width: 100%;
+    width: 90%;
     margin: 30px 0;
 }
 .test-card{
@@ -145,16 +164,17 @@
 }
 .tests-map{
     display: flex;
+    overflow-x: scroll;
     gap: 70px;
 }
 .cover-img{
     height: 60%;
 }
 .test-view{
-    /* display: flex;
+    display: flex;
     align-items: center;
-    flex-direction: column; */
-    width: 80%;
+    flex-direction: column;
+    width: 95%;
     background-color: rgba(243, 243, 243, 1);
 }
 .test-img{
@@ -164,6 +184,9 @@
     justify-content: center;
     align-items: center;
     margin-top: 15px;
+}
+.test-view-cont{
+    width: 95%;
 }
 /* ПРОФИЛЬ */
 
@@ -196,9 +219,7 @@
 .big-cover-img{
     width: 900px;
 }
-.result{
-    
-}
+
 /* ОБЩЕЕ */
 .background{
    color: #bb68b0;
@@ -229,11 +250,11 @@ li{
     border-radius: 5px;
 }
 
+
 button {
-    width: 150px;
-    padding: 10px;
-    background-color: #a04f85;
-    color: #fff;
+    padding: 10px 15px;
+    background-color: rgba(255, 149, 51, 1);
+    color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -241,7 +262,7 @@ button {
 }
 
 button:hover {
-    background-color: #d40cba;
+    background-color: rgb(217, 128, 45);
 }
 
 .error-message {
@@ -258,4 +279,19 @@ button:hover {
 .stars-cont{
     display: flex;
     gap: 2px;
+}
+.drop-area {
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #aaa;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.drop-area img {
+    max-width: 100%;
+    max-height: 100%;
 }

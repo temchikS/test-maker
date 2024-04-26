@@ -35,8 +35,6 @@ export default function Header(){
                     <ul>
                         <li><Link className="link-unstyled" to="/">Главная</Link> </li>
                         <li><Link className="link-unstyled" to={'/profile'}>Профиль</Link></li>
-                        <li>Настройки</li>
-                        <li>ЧОТА еще</li>
                         {userInfo.userRole === 'admin' && <li><Link className="link-unstyled" to={'/not-verified-tests'}>Проверить тесты</Link></li>}
                         <li><Link className="link-unstyled" to={'/maketest'}>Создать тест</Link></li>
                         

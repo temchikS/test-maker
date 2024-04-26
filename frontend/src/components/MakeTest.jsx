@@ -82,7 +82,7 @@ export default function MakeTest() {
                 formData.append(`questions[${index}].answers[${ansIndex}].isCorrect`, answer.isCorrect);
             });
         });
-        fetch('http://26.226.166.33:5228/api/Test/CreateTest', {
+        fetch('http://localhost:5228/api/Test/CreateTest', {
             method: 'POST',
             body: formData
         })
