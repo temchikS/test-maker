@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from './Header';
 import { Link, useNavigate } from 'react-router-dom';
 import krestik from '../images/krestik.png';
+import './MakeTest.css'
 
 export default function MakeTest() {
     const [testName, setTestName] = useState('');
@@ -35,8 +36,10 @@ export default function MakeTest() {
                 const updatedAnswers = question.answers.map(answer => {
                     if (answer.id === answerId) {
                         return { ...answer, isCorrect: true };
+                    } else if (answer.isCorrect) {
+                        return { ...answer, isCorrect: false };
                     }
-                    return { ...answer, isCorrect: false }; 
+                    return answer;
                 });
                 return { ...question, answers: updatedAnswers };
             }
@@ -68,7 +71,6 @@ export default function MakeTest() {
         formData.append('createdBy', username);
         formData.append('coverImage', coverImage);
         formData.append('description', description);
-        // formData.append('makedTestId', 0);
         formData.append('rating', 0);
         formData.append('ImageUrl', null);
         formData.append('userRating', []);
@@ -82,7 +84,7 @@ export default function MakeTest() {
                 formData.append(`questions[${index}].answers[${ansIndex}].isCorrect`, answer.isCorrect);
             });
         });
-        fetch('http://localhost:5228/api/Test/CreateTest', {
+        fetch('http://26.226.166.33:5228/api/Test/CreateTest', {
             method: 'POST',
             body: formData
         })
@@ -117,33 +119,47 @@ export default function MakeTest() {
             setCustomTag('');
         }
     }
-
+    function resizeInput(e) {
+        const input = e.target;
+        input.style.width = 0;
+        input.style.width = input.scrollWidth + 'px'; 
+    }
+    
     return (
         <div className="main">
             <Header/>
             <div className="test-make">
+            <label class="form-label text-hint mb-1"> Изображение :
                 <input
                     type="file"
                     accept="image/*" 
                     onChange={handleCoverImageChange}
-                />
-                <input
+                /> </label>
+                <div   className='text-name'>
+                    <input
+                    className='make-test-input'
+                    onInput={resizeInput}
                     type="text"
                     placeholder="Название теста"
                     value={testName}
                     onChange={(e) => setTestName(e.target.value)}
-                />
+                /></div>
+                <div className='text-name'>
                 <input
+                    onInput={resizeInput}
                     type="text"
+                    className='make-test-input'
                     placeholder="Описание"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                />
+                /></div>
                 
                 {questions.map((question, questionIndex) => (
-                    <div key={question.id}>
+                        <div className='question-maketest' key={question.id}>
                         <input
                             type="text"
+                            className='make-test-input'
+                            onInput={resizeInput}
                             placeholder={`Вопрос ${questionIndex + 1}`}
                             value={question.questionText}
                             onChange={(e) => {
@@ -153,10 +169,12 @@ export default function MakeTest() {
                             }}
                         />
                         {question.answers.map((answer, answerIndex) => (
-                            <div key={answer.id}>
+                            <div key={answer.id} className="answer-container">
                                 <input
                                     type="text"
+                                    onInput={resizeInput}
                                     placeholder={`Ответ ${answerIndex + 1}`}
+                                    className='make-test-input'
                                     value={answer.answerText}
                                     onChange={(e) => {
                                         const newQuestions = [...questions];
@@ -164,12 +182,15 @@ export default function MakeTest() {
                                         setQuestions(newQuestions);
                                     }}
                                 />
-                                <button onClick={() => MakeItRight(question.id, answer.id)}>
-                                    {answer.isCorrect ? "Правильный" : "Не правильный"}
-                                </button>
+                                <div className="answer-buttons">
+                                    <button className={`maketest-button ${answer.isCorrect ? 'correct-answer' : 'incorrect-answer'}`} onClick={() => MakeItRight(question.id, answer.id)}>
+                                        {answer.isCorrect ? "✔" : "❌"}
+                                    </button>
+                                </div>
                             </div>
+                           
                         ))}
-                        <button onClick={() => addAnswer(question.id)}>Добавить ответ</button>
+                        <button className="create-new" onClick={() => addAnswer(question.id)}>Добавить ответ</button>
                     </div>
                 ))}
                 <button className="add-answ-btn" onClick={addQuestion}>Добавить вопрос</button>

@@ -28,7 +28,7 @@ export default function RegistrationPage() {
         };
     
         try {
-            const response = await fetch('http://localhost:5228/api/User/RegisterUser/Registration', {
+            const response = await fetch(`http://26.226.166.33:5228/api/User/RegisterUser/Registration`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

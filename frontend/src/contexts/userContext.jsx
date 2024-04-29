@@ -11,7 +11,7 @@ const UserProvider = ({ children }) => {
     useEffect(() => {
         async function fetchUserData() {
             try {
-                const response = await fetch('http://localhost:5228/api/User/GetUserData', {
+                const response = await fetch('http://26.226.166.33:5228/api/User/GetUserData', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`

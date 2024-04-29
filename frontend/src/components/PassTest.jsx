@@ -20,7 +20,7 @@ export default function PassTest() {
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://localhost:5228/api/Test/GetVerifiedTestById/${id}`);
+                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetVerifiedTestById/${id}`);
                 if (!response.ok) {
                     throw new Error('Ошибка при получении теста');
                 }
@@ -30,6 +30,7 @@ export default function PassTest() {
                     initialSelectedAnswers[question.questionId] = null;
                 });
                 setSelectedAnswers(initialSelectedAnswers);
+                console.log(data);
                 setTest(data);
             } catch (error) {
                 console.error('Произошла ошибка при получении теста:', error);
@@ -41,7 +42,7 @@ export default function PassTest() {
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://localhost:5228/api/Test/GetUserPassedTest/PassedTest/${id}/${userInfo.userId}`, {
+                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetUserPassedTest/PassedTest/${id}/${userInfo.userId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -95,7 +96,7 @@ export default function PassTest() {
             formData.append('result', calculateResult());
             formData.append('maxQuestions', test.questions.length);
     
-            const response = await fetch(`http://localhost:5228/api/User/PassTest/${id}`, {
+            const response = await fetch(`http://26.226.166.33:5228/api/User/PassTest/${id}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -107,6 +108,8 @@ export default function PassTest() {
                 throw new Error('Ошибка при прохождении теста');
             }
             setFinished(false);
+            setStarted(false);
+            setTimeElapsed(0);
             const data = await response.text();
             console.log(data); // Обработка успешного ответа
         } catch (error) {
@@ -141,26 +144,28 @@ export default function PassTest() {
             <Header/>
             {test ? (
                 <div className='test-view'>
-                    <div className='test-view-cont'>
+                    <div className={`test-view-cont ${!isStarted ? '' : 'hidden'}`}>
                         <div className='test-img'>
                             <img className='big-cover-img' src={test.imageUrl} alt="" />
                             <h2>{test.testName}</h2> 
                         </div>
                         <div className='test-info-cont'>
                             <div className='test-info'>
-                                <p>Описание: {test.description}</p>
-                                <p>Автор: {test.createdBy}</p>
-                                <p>Теги: {test.tags.map(tag => tag.tagText).join(', ')}</p>
-                                <div className='stars-cont'>{renderRatingStars(test.rating)}</div>
-
+                            <p><strong>Описание:</strong> {test.description}</p>
+                            <p><strong>Автор:</strong> {test.createdBy}</p>
+                            <p><strong>Теги:</strong> {test.tags.map(tag => tag.tagText).join(', ')}</p>
+                            <p><strong>Рейтинг:</strong> </p>
+                            <div className='stars-cont'>
+                                <div>{renderRatingStars(test.averageRating)}</div>
                             </div>
-                            {passedTest ? (
+                        </div>
+                        {passedTest ? (
                             <div className='result'>
-                                <h2>Результаты прохождения теста:</h2>
-                                <p>Результат: {passedTest.result}/{passedTest.maxQuestions}</p>
-                                <p>Время прохождения: {passedTest.time} секунд</p>
-                                <p>Оцените тест:</p>
-                                <RatingStars userId={userInfo.userId} userName={userInfo.username}/>
+                                <h3><strong>Результаты прохождения теста:</strong></h3>
+                                <p><strong>Результат:</strong> {passedTest.result}/{passedTest.maxQuestions}</p>
+                                <p><strong>Время прохождения:</strong> {passedTest.time} секунд</p>
+                                <p><strong style={{display:'flex'}}>Оцените тест:<RatingStars testId={id}/></strong></p>
+                                
                             </div>
                         ) : null}
                         </div>
@@ -168,12 +173,13 @@ export default function PassTest() {
                     <button className={!isStarted ? '' : 'hidden'} onClick={handleStart}>Начать тест</button>
                     <div className={`pass-test ${isStarted ? '' : 'hidden'}`}>
                         <p>Времени прошло: {timeElapsed} секунд</p>
-                        {test.questions.map(question => (
-                            <div key={question.questionId}>
+                        {test.questions.map((question, index) => (
+                            <div className='question' key={question.questionId}>
+                                <h3>Вопрос {index + 1}</h3>
                                 <p>{question.questionText}</p>
                                 <ul>
                                     {question.answers.map(answer => (
-                                        <li key={answer.answerId}>
+                                        <li className='answer' key={answer.answerId}  onClick={() => document.getElementById(`answer-${answer.answerId}`).click()}>
                                             <input
                                                 type="radio"
                                                 name={`question-${question.questionId}`}
@@ -188,7 +194,7 @@ export default function PassTest() {
                                 </ul>
                             </div>
                         ))}
-                        <button onClick={handleSubmit}>Отправить ответы</button>
+                        <button style={{width:'300px'}} onClick={handleSubmit}>Отправить ответы</button>
                     </div>
                 </div>
             ) : (

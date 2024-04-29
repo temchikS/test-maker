@@ -8,7 +8,7 @@ import Navigation from './components/navigation';
 import ProfilePage from './components/Profile';
 import MakeTest from './components/MakeTest';
 import PassTest from './components/PassTest';
-import ViewTest from './components/ViewTest';
+import AllTest from './components/AllTest';
 import { UserProvider } from './contexts/userContext';
 import NotVerTest from './components/NotVerifyedTests';
 import CheckTest from './components/CheckTest';
@@ -34,7 +34,8 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/profile" element={<ProfilePage/>}/>
           <Route path="/maketest" element={<MakeTest/>}/>
-          <Route path="/view-test/:name/:id" element={<ViewTest/>}/>
+          <Route path="/all-tests" element={<AllTest/>}/>
+          <Route path="/all-tests/:searchQuery" element={<AllTest />} />
           <Route path="/pass-test/:name/:id" element={<PassTest/>}/>
           <Route path="/not-verified-tests" element={<NotVerTest/>}/>
           <Route path="/check-test/:name/:id" element={<CheckTest/>}/>

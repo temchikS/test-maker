@@ -11,7 +11,7 @@ export default function CheckTest() {
     useEffect(() => {
         async function fetchTestById() {
             try {
-                const response = await fetch(`http://localhost:5228/api/Test/GetNotVerifiedTestById/${id}`);
+                const response = await fetch(`http://26.226.166.33:5228/api/Test/GetNotVerifiedTestById/${id}`);
                 if (!response.ok) {
                     throw new Error('Ошибка при получении теста');
                 }
@@ -43,7 +43,7 @@ export default function CheckTest() {
     };
     const handleSubmit = async () => {
         try {
-            const response = await fetch(`http://localhost:5228/api/Test/VerifyTest/${id}`, {
+            const response = await fetch(`http://26.226.166.33:5228/api/Test/VerifyTest/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -61,7 +61,7 @@ export default function CheckTest() {
     };
     const handleDelete = async () => {
         try{
-            const response = await fetch(`http://localhost:5228/api/Test/DeleteTest/${id}`,{
+            const response = await fetch(`http://26.226.166.33:5228/api/Test/DeleteTest/${id}`,{
                 method:'DELETE'
             });
             if (!response.ok) {
@@ -77,38 +77,44 @@ export default function CheckTest() {
         <div className="main">
             <Header/>
             {test ? (
-                <div>
-                    <img src={test.imageUrl} alt="" />
-                    <h2>{test.testName}</h2>
-                    <p>Автор: {test.createdBy}</p>
-                    <p>Описание: {test.description}</p>
-                    <div>
-                        <p>Теги: {test.tags.map(tag => tag.tagText).join(', ')}</p>
-                    </div>
-                    <div>
-                        {test.questions.map(question => (
-                            <div key={question.questionId}>
-                                <p>{question.questionText}</p>
-                                <ul>
-                                    {question.answers.map(answer => (
-                                        <li key={answer.answerId}>
-                                            <input
-                                                type="radio"
-                                                name={`question-${question.questionId}`}
-                                                id={`answer-${answer.answerId}`}
-                                                value={answer.answerId}
-                                                onChange={() => handleAnswerSelect(question.questionId, answer.answerId)}
-                                                checked={selectedAnswers[question.questionId] === answer.answerId}
-                                            />
-                                            <label htmlFor={`answer-${answer.answerId}`}>{answer.answerText} {answer.isCorrect ? "Правильный" : "Неправильный"}</label>
-                                        </li>
-                                    ))}
-                                </ul>
+                <div className='test-view'>
+                    <div className='test-view-cont'>
+                        <div className='test-img'>
+                            <img className='big-cover-img' src={test.imageUrl} alt="" />
+                            <h2>{test.testName}</h2> 
+                        </div> 
+                        <div className='test-info-cont'>
+                            <div className='test-info'>
+                                <p>Описание: {test.description}</p>
+                                <p>Автор: {test.createdBy}</p>
+                                <p>Теги: {test.tags.map(tag => tag.tagText).join(', ')}</p>
                             </div>
-                        ))}
+                        </div>
+                        <div>
+                            {test.questions.map(question => (
+                                <div key={question.questionId}>
+                                    <p>{question.questionText}</p>
+                                    <ul>
+                                        {question.answers.map(answer => (
+                                            <li key={answer.answerId}>
+                                                <input
+                                                    type="radio"
+                                                    name={`question-${question.questionId}`}
+                                                    id={`answer-${answer.answerId}`}
+                                                    value={answer.answerId}
+                                                    onChange={() => handleAnswerSelect(question.questionId, answer.answerId)}
+                                                    checked={selectedAnswers[question.questionId] === answer.answerId}
+                                                />
+                                                <label htmlFor={`answer-${answer.answerId}`}>{answer.answerText} {answer.isCorrect ? "Правильный" : "Неправильный"}</label>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                        <button onClick={handleSubmit}>Одобрить</button>
+                        <button onClick={handleDelete}>Удалить</button>
                     </div>
-                    <button onClick={handleSubmit}>Одобрить</button>
-                    <button onClick={handleDelete}>Удалить</button>
                 </div>
             ) : (
                 <div>Загрузка...</div>
