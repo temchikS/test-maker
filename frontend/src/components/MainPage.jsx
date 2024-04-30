@@ -112,9 +112,7 @@ export default function MainPage() {
                                 <img className='cover-img' src={test.imageUrl} alt="cover image" />
                                 <h3>{test.testName}</h3>
                                 <p>Описание: {test.description}</p>
-                                <div>
-                                    <p>Теги: {test.tags.length > 3 ? test.tags.slice(0, 3).map(tag => tag.tagText).join(', ') + ' ...' : test.tags.map(tag => tag.tagText).join(', ')}</p>
-                                </div>
+                                <p>Теги: {test.tags.length > 3 ? test.tags.slice(0, 3).map(tag => tag.tagText).join(', ') + ' ...' : test.tags.map(tag => tag.tagText).join(', ')}</p>
                                 <div className='stars-cont'>
                                     <div>{renderRatingStars(test.averageRating)}</div>
                                 </div>

@@ -32,6 +32,7 @@ export default function PassTest() {
                 setSelectedAnswers(initialSelectedAnswers);
                 console.log(data);
                 setTest(data);
+                window.scrollTo(0, 200);
             } catch (error) {
                 console.error('Произошла ошибка при получении теста:', error);
                 setError(error.message);
@@ -143,7 +144,7 @@ export default function PassTest() {
         <div className="main">
             <Header/>
             {test ? (
-                <div className='test-view'>
+                <div className='test-view' >
                     <div className={`test-view-cont ${!isStarted ? '' : 'hidden'}`}>
                         <div className='test-img'>
                             <img className='big-cover-img' src={test.imageUrl} alt="" />
@@ -171,7 +172,7 @@ export default function PassTest() {
                         </div>
                     </div>
                     <button className={!isStarted ? '' : 'hidden'} onClick={handleStart}>Начать тест</button>
-                    <div className={`pass-test ${isStarted ? '' : 'hidden'}`}>
+                    <div style={{marginBottom:'10px'}} className={`pass-test ${isStarted ? '' : 'hidden'}`}>
                         <p>Времени прошло: {timeElapsed} секунд</p>
                         {test.questions.map((question, index) => (
                             <div className='question' key={question.questionId}>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserContext} from '../contexts/userContext';
 import krestik from '../images/krestik.png';
 import lupa from "../images/lupa.png";
+import logo from "../images/logo.png";
 export default function Header(){
     const userInfo = useContext(UserContext);
     const [showSidebar, setShowSidebar] = useState(false);
@@ -25,7 +26,7 @@ export default function Header(){
     return(
         <div className='HeaderStyle'>
             <div className='mini-profile our-logo'>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Youtube.png" alt="logo" />
+                <img src={logo} alt="logo" />
                 
             </div>
             
@@ -53,6 +54,7 @@ export default function Header(){
                             <li><Link className="link-unstyled" to="/">Главная</Link> </li>
                             <li><Link className="link-unstyled" to={'/profile'}>Профиль</Link></li>
                             {userInfo.userRole === 'admin' && <li><Link className="link-unstyled" to={'/not-verified-tests'}>Проверить тесты</Link></li>}
+                            {userInfo.userRole === 'admin' && <li><Link className="link-unstyled" to={'/admin-panel'}>Админ панель</Link></li>}
                             <li><Link className="link-unstyled" to={'/maketest'}>Создать тест</Link></li>
                             
                         </ul>

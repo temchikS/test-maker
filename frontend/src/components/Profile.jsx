@@ -159,7 +159,7 @@ export default function ProfilePage() {
                             Пройденные тесты
                             <img width={20} style={{ transform: 'rotate(180deg)', cursor:'pointer'}}  onClick={toggleUserInfo} src={strelka} alt="" />
                         </div>
-                        <div style={{display:'flex',gap:'10px', width:'95%'}}>
+                        <div style={{display:'flex',flexWrap:'wrap',gap:'10px', width:'95%'}}>
                             {tests.passedTests && tests.passedTests.map((test, index) => (
                             <Link className='link-unstyled' to={`/pass-test/${test.testName}/${test.id}`}>
                                 <div className='test-card' key={test.id}>

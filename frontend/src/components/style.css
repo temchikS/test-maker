@@ -1,11 +1,21 @@
+*{
+    box-sizing:border-box;
+    resize: none;
+}
+/* ХЕДЕР */
 /* ХЕДЕР */
 .HeaderStyle {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 90px;
-    background-color: rgba(96, 122, 255, 1);
+    height: 90px; 
+    color: white;
+    background: -webkit-linear-gradient(left, #8a2be2, #7f58a7);
+    background: -moz-linear-gradient(left, #8a2be2, #8961b1);
+    background: -o-linear-gradient(left, #8a2be2, #8868a8);
+    background: linear-gradient(to right, #8a2be2, #72568f);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -20,6 +30,7 @@
     text-align: center;
     margin: 0 12px;
 }
+
 .user-avatar{
     width: 65px; 
     height: 65px;
@@ -46,7 +57,8 @@
     top: 0px;
     right: -280px;
     transition: right 0.3s ease; 
-    background-color: rgba(85, 109, 230, 1);
+    background: -webkit-linear-gradient(top, #8a2be2, #4f4c52);;
+
 }
 .sidebar.show {
     right: 0px; 
@@ -107,8 +119,8 @@
     right: 0;
     background-color: rgba(217, 217, 217, 1);
     padding:10px;
-    width: 25px;
-    height: 25px;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
     transition: all 0.5s ease;
 }
@@ -156,20 +168,32 @@
     min-height: 100vh;
     width: 100%;
     align-items: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position:left 300px center;
+    background-blend-mode: multiply;
+    background-color: rgb(107, 107, 107);
+    background-image: url(https://get.wallhere.com/photo/Monogatari-Series-Senjougahara-Hitagi-anime-girls-anime-face-purple-hair-blue-eyes-1358837.jpg);
 }
 
 .section{
     width: 100%;
     display: flex;
+    
 }
 .actual-tests-section{
+    color: white;
     display: flex;
     flex-direction: column;
 }
 .statistic{
     width: 380px;
     height: 200px;
-    background-color: rgba(244, 167, 18, 0.29);
+    background-color: #8a2be2;
+    background: -webkit-linear-gradient(left, #8a2be2, #4f4c52);
+    background: -moz-linear-gradient(left, #8a2be2, #4f4c52);
+    background: -o-linear-gradient(left, #8a2be2, #4f4c52);
+    background: linear-gradient(to right, #8a2be2, #4f4c52);
     border-radius: 10px;
     display: grid;
     grid-template-columns: auto auto; /* Два столбца */
@@ -204,17 +228,43 @@
     height: 290px;
     border-radius: 10px;
     overflow: hidden;
-    background-color: rgba(85, 109, 230, 1);
+    background:  #521f83;
+    color: white;
 }
-.test-card p{
-    text-wrap: nowrap;
+.test-card>p{
     margin: 0;
 }
+.scroll-menu-wrapper {
+    position: relative;
+}
+
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: #fff; /* измените цвет фона по вашему выбору */
+    border: 1px solid #000; /* измените стиль границы по вашему выбору */
+    border-radius: 50%; /* делает кнопки круглыми */
+    cursor: pointer;
+}
+
+.left-button {
+    left: 0;
+}
+
+.right-button {
+    right: 0;
+}
+.test-tags {
+    white-space: nowrap; /* чтобы теги не переносились на новую строку */
+}
+
 .tests-map{
     display: flex;
-    overflow-x: auto;
-    gap: 70px;
-
+    overflow-x: scroll;
+    gap: 55px;
 }
 .cover-img{
     height: 60%;
@@ -265,6 +315,7 @@
 .answer:hover{
     background-color: rgb(149, 180, 217);
 }
+
 /* ПРОФИЛЬ */
 .profile{
     display: grid;
@@ -301,6 +352,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    color: white;
 }
 .tests-map-flex{
     display: flex;
@@ -321,9 +373,9 @@ li{
    list-style-type:none ; 
 }
 .link-unstyled {
-
+    color: black;
     text-decoration: none;
-    color: inherit;
+   
 }
 .navigation-panel{
     position: fixed;
@@ -339,15 +391,15 @@ li{
 }
 button {
     padding: 10px 15px;
-    background-color: #0074d9;
-    color: #000000;
+    background-color:  #8a2be2 ;
+    color: #ffffff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 button:hover {
-    background-color: #0056b3;
+    background-color: #6a1d9c;
 }
 .error-message {
     color: red;
@@ -401,4 +453,32 @@ h2{
 }
 .red-button:hover{
     background-color: rgb(173, 0, 0);
+}
+.mini-user{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+.mini-user>img{
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+}
+.admin-links{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.footer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    background: linear-gradient(to right, #8a2be2, #4f4c52);
+}
+.search-results{
+    display: flex;
+    gap: 55px   ;
 }

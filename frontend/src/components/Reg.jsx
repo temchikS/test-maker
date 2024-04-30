@@ -67,12 +67,10 @@ export default function RegistrationPage() {
                 className='input-login-reg'
                 type="number"
                 placeholder="Возраст"
+                min={0}
+                max={100}
                 value={age}
-                onChange={(e) => {
-                    if (e.target.value <= 100) {
-                        setAge(e.target.value);
-                    }
-                }}
+                onChange={(e) => {setAge(e.target.value);}}
             />
             </div>
             <div className="input-container">
